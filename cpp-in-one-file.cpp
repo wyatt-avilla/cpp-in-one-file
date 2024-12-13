@@ -4,6 +4,7 @@
 #include <vector>
 
 /*
+ * this file covers:
  * - classes (constructors, destructors, public/private, `this` keyword)
  * - vectors
  * - strings
