@@ -83,7 +83,7 @@ std::vector<int> ask_for_numbers(void) {
         }
     }
     if (numbers.size() == 0) {
-        throw std::invalid_argument("No numbers entered!");
+        throw std::runtime_error("No numbers entered!");
     }
     return numbers;
 }
