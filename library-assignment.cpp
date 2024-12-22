@@ -18,23 +18,39 @@
  */
 
 
+struct MetaData {
+    int id;
+    int parentId;
+
+    MetaData(int id, int parentId) {
+        this->id = id;
+        this->parentId = parentId;
+    };
+};
+
 class Book {
   private:
+    MetaData* metadata;
+    bool isCheckedOut;
     const std::string title;
     const std::string author;
-    bool isCheckedOut;
 
   public:
-    // Constructor
     Book(const std::string& bookTitle, const std::string& bookAuthor)
-        : title(bookTitle), author(bookAuthor), isCheckedOut(false) {
-        if (bookTitle.empty() || bookAuthor.empty()) {
-            throw std::invalid_argument("Book title and author cannot be empty"
-            );
-        }
+        : isCheckedOut(false) {
+
+        // explicitly allocate memory, similar to `malloc` in C
+        metadata = new MetaData(0, -1);
+
+        std::cout << "Memory allocated for book: " << bookTitle << std::endl;
     }
 
-    // Member functions using 'this' keyword and references
+    ~Book() {
+        // explicitly free memory, similar to `free` in C
+        delete metadata;
+        std::cout << "Memory freed for book: " << getTitle() << std::endl;
+    }
+
     void checkOut() {
         if (this->isCheckedOut) {
             throw std::runtime_error("Book is already checked out");
@@ -49,12 +65,9 @@ class Book {
         this->isCheckedOut = false;
     }
 
-    // Getter that returns a reference to avoid copying
-    const std::string& getTitle() const { return this->title; }
-
-    const std::string& getAuthor() const { return this->author; }
-
-    bool getStatus() const { return this->isCheckedOut; }
+    const std::string& getTitle() const { return title; }
+    const std::string& getAuthor() const { return author; }
+    bool getStatus() const { return isCheckedOut; }
 };
 
 class Library {
@@ -62,10 +75,12 @@ class Library {
     std::vector<Book> books;
 
   public:
+    Library() { std::cout << "Library created" << std::endl; }
+
     void addBook(const std::string& title, const std::string& author) {
         if (title.empty() || author.empty()) {
-            throw std::runtime_error("Cant add book without a title or author");
-            return;
+            throw std::runtime_error("Can't add book without a title or author"
+            );
         }
         books.push_back(Book(title, author));
     }
@@ -76,7 +91,7 @@ class Library {
             return;
         }
 
-        for (const auto& book : books) { // Using type inference with auto
+        for (const auto& book : books) {
             std::cout << "Title: " << book.getTitle()
                       << ", Author: " << book.getAuthor() << ", Status: "
                       << (book.getStatus() ? "Checked Out" : "Available")
@@ -104,6 +119,7 @@ class Library {
         throw std::runtime_error("Book not found");
     }
 };
+
 
 int main(int argc, char* argv[]) {
     if (argc != 3) {
