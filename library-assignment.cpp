@@ -46,11 +46,19 @@ class Book {
         std::cout << "Memory allocated for book: " << bookTitle << std::endl;
     }
 
+    Book(const Book& other) : isCheckedOut(other.isCheckedOut) {
+        metadata = new BookMetaData(
+            other.metadata->title,
+            other.metadata->author,
+            other.metadata->id
+        );
+    }
+
     ~Book() {
         // explicitly free memory with the `delete` keyword
         // (similar to `free` in C)
-        delete metadata;
         std::cout << "Memory freed for book: " << getTitle() << std::endl;
+        delete metadata;
     }
 
     void checkOut() {
