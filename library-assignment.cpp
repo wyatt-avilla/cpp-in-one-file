@@ -173,10 +173,13 @@ int main(int argc, char* argv[]) {
             } else if (command == "listTitles") {
                 auto titles = library.getTitlesInLibrary();
                 std::sort(titles.begin(), titles.end());
+                std::string line;
                 for (auto& t : titles) {
-                    ofs << t;
+                    line += t + " ";
                 }
-                ofs << std::endl;
+                // delete the last space
+                line.pop_back();
+                ofs << line << std::endl;
 
             } else if (command == "checkout") {
                 line_sstream >> title;
