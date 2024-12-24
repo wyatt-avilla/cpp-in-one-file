@@ -170,17 +170,6 @@ int main(int argc, char* argv[]) {
                 std::cout << "Successfully added " << title << " by " << author
                           << " to the library" << std::endl;
 
-            } else if (command == "listTitles") {
-                auto titles = library.getTitlesInLibrary();
-                std::sort(titles.begin(), titles.end());
-                std::string line;
-                for (auto& t : titles) {
-                    line += t + " ";
-                }
-                // delete the last space
-                line.pop_back();
-                ofs << line << std::endl;
-
             } else if (command == "checkout") {
                 line_sstream >> title;
                 line_sstream >> author;
@@ -194,6 +183,22 @@ int main(int argc, char* argv[]) {
                 library.returnBook(title);
                 std::cout << "Successfully returned " << title << " by "
                           << author << std::endl;
+
+            } else if (command == "listTitles") {
+                auto titles = library.getTitlesInLibrary();
+                std::sort(titles.begin(), titles.end());
+                std::string line;
+                for (auto& t : titles) {
+                    line += t + " ";
+                }
+                // delete the last space
+                line.pop_back();
+                ofs << line << std::endl;
+
+            } else if (command == "containsAuthor") {
+                line_sstream >> title;
+                bool contains_author = library.containsBookByAuthor(title);
+                ofs << std::boolalpha << contains_author << std::endl;
 
             } else {
                 std::cout << "\"" << command << "\""
