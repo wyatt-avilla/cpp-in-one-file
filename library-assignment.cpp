@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -16,36 +17,38 @@
  * - type inference (auto)
  */
 
+struct BookMetaData {
+    const std::string title;
+    const std::string author;
+    const int id;
 
-struct MetaData {
-    int id;
-    int parentId;
-
-    MetaData(int id, int parentId) {
-        this->id = id;
-        this->parentId = parentId;
-    };
+    BookMetaData(std::string t, std::string a, int id)
+        : title(t), author(a), id(id) {};
 };
 
 class Book {
   private:
-    MetaData* metadata;
+    BookMetaData* metadata;
     bool isCheckedOut;
-    const std::string title;
-    const std::string author;
 
   public:
-    Book(const std::string& bookTitle, const std::string& bookAuthor)
+    Book(
+        const std::string& bookTitle,
+        const std::string& bookAuthor,
+        const int id
+    )
         : isCheckedOut(false) {
 
-        // explicitly allocate memory, similar to `malloc` in C
-        metadata = new MetaData(0, -1);
+        // explicitly allocate memory with the `new` keyword
+        // (similar to `malloc` in C)
+        metadata = new BookMetaData(bookTitle, bookAuthor, id);
 
         std::cout << "Memory allocated for book: " << bookTitle << std::endl;
     }
 
     ~Book() {
-        // explicitly free memory, similar to `free` in C
+        // explicitly free memory with the `delete` keyword
+        // (similar to `free` in C)
         delete metadata;
         std::cout << "Memory freed for book: " << getTitle() << std::endl;
     }
@@ -64,38 +67,25 @@ class Book {
         this->isCheckedOut = false;
     }
 
-    const std::string& getTitle() const { return title; }
-    const std::string& getAuthor() const { return author; }
-    bool getStatus() const { return isCheckedOut; }
+    const std::string& getTitle() const { return this->metadata->title; }
+    const std::string& getAuthor() const { return this->metadata->author; }
+    bool getStatus() const { return this->isCheckedOut; }
 };
 
 class Library {
   private:
     std::vector<Book> books;
+    int id_counter;
 
   public:
-    Library() { std::cout << "Library created" << std::endl; }
+    Library() : id_counter(1) { std::cout << "Library created" << std::endl; }
 
     void addBook(const std::string& title, const std::string& author) {
         if (title.empty() || author.empty()) {
             throw std::runtime_error("Can't add book without a title or author"
             );
         }
-        books.push_back(Book(title, author));
-    }
-
-    void listBooks() const {
-        if (books.empty()) {
-            std::cout << "No books in the library.\n";
-            return;
-        }
-
-        for (const auto& book : books) {
-            std::cout << "Title: " << book.getTitle()
-                      << ", Author: " << book.getAuthor() << ", Status: "
-                      << (book.getStatus() ? "Checked Out" : "Available")
-                      << std::endl;
-        }
+        books.emplace_back(title, author, this->id_counter++);
     }
 
     void checkOutBook(const std::string& title) {
@@ -117,6 +107,25 @@ class Library {
         }
         throw std::runtime_error("Book not found");
     }
+
+    std::vector<std::string> getTitlesInLibrary(void) const {
+        // write your code here!
+        throw(std::logic_error(
+            "Implement the `getTitlesInLibrary` method in the `Library` class"
+        ));
+
+        std::vector<std::string> titles;
+        return titles;
+    }
+
+    bool containsBookByAuthor(const std::string& author) const {
+        // write your code here!
+        throw(std::logic_error(
+            "Implement the `containsBookByAuthor` method in the `Library` class"
+        ));
+
+        return false;
+    }
 };
 
 
@@ -126,10 +135,6 @@ int main(int argc, char* argv[]) {
                   << std::endl;
         exit(1);
     }
-
-    Library library;
-    std::string line, command, title, author;
-
 
     std::ifstream ifs(argv[1]);
     if (!ifs.is_open()) {
@@ -143,6 +148,8 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
+    Library library;
+    std::string line, command, title, author;
     while (std::getline(ifs, line)) {
         std::istringstream line_sstream(line);
         line_sstream >> command;
@@ -152,25 +159,34 @@ int main(int argc, char* argv[]) {
                 line_sstream >> title;
                 line_sstream >> author;
                 library.addBook(title, author);
-                std::cout << "Book added successfully!" << std::endl;
+                std::cout << "Successfully added " << title << " by " << author
+                          << " to the library" << std::endl;
 
-            } else if (command == "list") {
-                library.listBooks();
+            } else if (command == "listTitles") {
+                auto titles = library.getTitlesInLibrary();
+                std::sort(titles.begin(), titles.end());
+                for (auto& t : titles) {
+                    ofs << t;
+                }
+                ofs << std::endl;
 
             } else if (command == "checkout") {
                 line_sstream >> title;
                 line_sstream >> author;
                 library.checkOutBook(title);
-                std::cout << "Book checked out successfully!" << std::endl;
+                std::cout << "Successfully checked out " << title << " by "
+                          << author << std::endl;
 
             } else if (command == "return") {
                 line_sstream >> title;
                 line_sstream >> author;
                 library.returnBook(title);
-                std::cout << "Book returned successfully!" << std::endl;
+                std::cout << "Successfully returned " << title << " by "
+                          << author << std::endl;
 
             } else {
-                std::cout << "Invalid option. Please try again." << std::endl;
+                std::cout << "\"" << command << "\""
+                          << " is an invalid command, skipping..." << std::endl;
             }
         } catch (const std::exception& e) {
             std::cout << "Error: " << e.what() << std::endl;
@@ -179,5 +195,5 @@ int main(int argc, char* argv[]) {
 
     ifs.close();
     ofs.close();
-    return 0;
+    exit(0);
 }
