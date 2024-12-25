@@ -1,0 +1,10 @@
+book_of_proof the_stand uzumaki
+book_of_proof dune nana norwegian_wood the_divine_comedy the_stand uzumaki
+book_of_proof nana norwegian_wood the_divine_comedy the_stand uzumaki
+book_of_proof dune norwegian_wood the_divine_comedy uzumaki
+true
+false
+true
+false
+false
+true
