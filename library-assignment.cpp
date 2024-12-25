@@ -159,6 +159,9 @@ int main(int argc, char* argv[]) {
     Library library;
     std::string line, command, title, author;
     while (std::getline(ifs, line)) {
+        if (line.empty() || line.front() == '#') {
+            continue;
+        }
         std::istringstream line_sstream(line);
         line_sstream >> command;
 
