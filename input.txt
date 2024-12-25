@@ -1,0 +1,39 @@
+# this is the input file for the program. if you check
+# check the main function, you can see how the program
+# parses these lines as function calls with arguments
+
+
+
+add the_stand stephen_king
+add book_of_proof richard_hammack
+add uzumaki junji_ito
+
+listTitles
+
+add dune herbert_frank
+add nana ai_yazawa
+add norwegian_wood haruki_murakami
+add the_divine_comedy dante_alighieri 
+
+listTitles
+
+checkout dune herbert_frank
+
+listTitles
+
+return dune herbert_frank
+
+checkout the_stand stephen_king
+checkout nana ai_yazawa
+
+listTitles
+
+return the_stand stephen_king
+return nana ai_yazawa
+
+containsAuthor junji_ito
+containsAuthor wyatt_avilla
+containsAuthor herbert_frank
+containsAuthor bejamin_reichwald
+containsAuthor graydon_hoare
+containsAuthor haruki_murakami
