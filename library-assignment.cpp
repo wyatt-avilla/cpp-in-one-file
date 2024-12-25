@@ -29,7 +29,7 @@ struct BookMetaData {
 class Book {
   private:
     BookMetaData* metadata;
-    bool isCheckedOut;
+    bool checkedOut;
 
   public:
     Book(
@@ -37,7 +37,7 @@ class Book {
         const std::string& bookAuthor,
         const int id
     )
-        : isCheckedOut(false) {
+        : checkedOut(false) {
 
         // explicitly allocate memory with the `new` keyword
         // (similar to `malloc` in C)
@@ -46,7 +46,7 @@ class Book {
         std::cout << "Memory allocated for book: " << bookTitle << std::endl;
     }
 
-    Book(const Book& other) : isCheckedOut(other.isCheckedOut) {
+    Book(const Book& other) : checkedOut(other.checkedOut) {
         metadata = new BookMetaData(
             other.metadata->title,
             other.metadata->author,
@@ -62,22 +62,22 @@ class Book {
     }
 
     void checkOut() {
-        if (this->isCheckedOut) {
+        if (this->checkedOut) {
             throw std::runtime_error("Book is already checked out");
         }
-        this->isCheckedOut = true;
+        this->checkedOut = true;
     }
 
     void returnBook() {
-        if (!this->isCheckedOut) {
+        if (!this->checkedOut) {
             throw std::runtime_error("Book is not checked out");
         }
-        this->isCheckedOut = false;
+        this->checkedOut = false;
     }
 
     const std::string& getTitle() const { return this->metadata->title; }
     const std::string& getAuthor() const { return this->metadata->author; }
-    bool getStatus() const { return this->isCheckedOut; }
+    bool isCheckedOut() const { return this->checkedOut; }
 };
 
 class Library {
@@ -116,7 +116,7 @@ class Library {
         throw std::runtime_error("Book not found");
     }
 
-    std::vector<std::string> getTitlesInLibrary(void) const {
+    std::vector<std::string> getAvailableTitlesInLibrary(void) const {
         // write your code here!
         throw(std::logic_error(
             "Implement the `getTitlesInLibrary` method in the `Library` class"
@@ -188,7 +188,7 @@ int main(int argc, char* argv[]) {
                           << author << std::endl;
 
             } else if (command == "listTitles") {
-                auto titles = library.getTitlesInLibrary();
+                auto titles = library.getAvailableTitlesInLibrary();
                 std::sort(titles.begin(), titles.end());
                 std::string line;
                 for (auto& t : titles) {
